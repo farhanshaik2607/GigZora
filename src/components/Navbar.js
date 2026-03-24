@@ -17,6 +17,7 @@ export default function Navbar() {
   const navLinks = user
     ? [
         { href: '/dashboard', label: 'Dashboard' },
+        { href: '/leads', label: 'Leads Scraper' },
       ]
     : [
         { href: '/login', label: 'Log In' },
