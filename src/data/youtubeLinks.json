@@ -1,0 +1,67 @@
+{
+  "React": [
+    { "title": "React Full Course 2024 - freeCodeCamp", "url": "https://www.youtube.com/watch?v=bMknfKXIFA8" },
+    { "title": "React Tutorial for Beginners - Programming with Mosh", "url": "https://www.youtube.com/watch?v=SqcY0GlETPk" },
+    { "title": "Advanced React Patterns - Jack Herrington", "url": "https://www.youtube.com/watch?v=WlxcujsvcIY" }
+  ],
+  "Next.js": [
+    { "title": "Next.js 14 Full Course - JavaScript Mastery", "url": "https://www.youtube.com/watch?v=wm5gMKuwSYk" },
+    { "title": "Next.js Tutorial - Traversy Media", "url": "https://www.youtube.com/watch?v=Y6KDk5iyrYE" }
+  ],
+  "TypeScript": [
+    { "title": "TypeScript Full Course - freeCodeCamp", "url": "https://www.youtube.com/watch?v=30LWjhZzg50" },
+    { "title": "TypeScript for React - Jack Herrington", "url": "https://www.youtube.com/watch?v=ydkQlJhodio" }
+  ],
+  "Python": [
+    { "title": "Python Full Course - freeCodeCamp", "url": "https://www.youtube.com/watch?v=rfscVS0vtbw" },
+    { "title": "Python for Data Science - Corey Schafer", "url": "https://www.youtube.com/watch?v=_uQrJ0TkZlc" }
+  ],
+  "Node.js": [
+    { "title": "Node.js Full Course - freeCodeCamp", "url": "https://www.youtube.com/watch?v=Oe421EPjeBE" },
+    { "title": "Node.js Crash Course - Traversy Media", "url": "https://www.youtube.com/watch?v=fBNz5xF-Kx4" }
+  ],
+  "AWS": [
+    { "title": "AWS Certified Cloud Practitioner - freeCodeCamp", "url": "https://www.youtube.com/watch?v=SOTamWNgDKc" },
+    { "title": "AWS Tutorial for Beginners - Simplilearn", "url": "https://www.youtube.com/watch?v=k1RI5locZE4" }
+  ],
+  "Docker": [
+    { "title": "Docker Tutorial - TechWorld with Nana", "url": "https://www.youtube.com/watch?v=3c-iBn73dDE" },
+    { "title": "Docker Crash Course - Traversy Media", "url": "https://www.youtube.com/watch?v=pTFZFxd4hOI" }
+  ],
+  "GraphQL": [
+    { "title": "GraphQL Full Course - freeCodeCamp", "url": "https://www.youtube.com/watch?v=ed8SzALpx1Q" },
+    { "title": "GraphQL Tutorial - The Net Ninja", "url": "https://www.youtube.com/watch?v=Y0lDGjwRYKw" }
+  ],
+  "Machine Learning": [
+    { "title": "Machine Learning Course - Stanford (Andrew Ng)", "url": "https://www.youtube.com/watch?v=jGwO_UgTS7I" },
+    { "title": "ML for Beginners - freeCodeCamp", "url": "https://www.youtube.com/watch?v=NWONeJKn6kc" }
+  ],
+  "Figma": [
+    { "title": "Figma Tutorial - freeCodeCamp", "url": "https://www.youtube.com/watch?v=jwCmIBJ8Jtc" },
+    { "title": "Figma UI Design - DesignCourse", "url": "https://www.youtube.com/watch?v=FTFaQWZBqQ8" }
+  ],
+  "CSS": [
+    { "title": "CSS Full Course - freeCodeCamp", "url": "https://www.youtube.com/watch?v=1Rs2ND1ryYc" },
+    { "title": "Advanced CSS - Kevin Powell", "url": "https://www.youtube.com/watch?v=1PnVor36_40" }
+  ],
+  "Tailwind CSS": [
+    { "title": "Tailwind CSS Full Course - freeCodeCamp", "url": "https://www.youtube.com/watch?v=ft30zcMlFao" },
+    { "title": "Tailwind CSS Crash Course - Traversy Media", "url": "https://www.youtube.com/watch?v=dFgzHOX84xQ" }
+  ],
+  "Kubernetes": [
+    { "title": "Kubernetes Tutorial - TechWorld with Nana", "url": "https://www.youtube.com/watch?v=X48VuDVv0do" },
+    { "title": "Kubernetes Crash Course - freeCodeCamp", "url": "https://www.youtube.com/watch?v=s_o8dwzRlu4" }
+  ],
+  "MongoDB": [
+    { "title": "MongoDB Crash Course - Traversy Media", "url": "https://www.youtube.com/watch?v=-56x56UppqQ" },
+    { "title": "MongoDB Full Course - freeCodeCamp", "url": "https://www.youtube.com/watch?v=ofme2o29ngU" }
+  ],
+  "Solidity": [
+    { "title": "Solidity Full Course - freeCodeCamp", "url": "https://www.youtube.com/watch?v=gyMwXuJrbJQ" },
+    { "title": "Smart Contract Development - Patrick Collins", "url": "https://www.youtube.com/watch?v=M576WGiDBdQ" }
+  ],
+  "default": [
+    { "title": "Complete Web Development Bootcamp - Dr. Angela Yu", "url": "https://www.youtube.com/watch?v=pQN-pnXPaVg" },
+    { "title": "CS50 - Harvard's Intro to CS", "url": "https://www.youtube.com/watch?v=8mAITcNt710" }
+  ]
+}

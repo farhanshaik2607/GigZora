@@ -1,0 +1,33 @@
+{
+  "categories": {
+    "legal": [
+      "For freelance contracts, always include scope of work, payment terms, deadlines, and intellectual property clauses. Consider using templates from platforms like LegalZoom or consulting a local attorney for complex projects.",
+      "When dealing with international clients, be aware of tax implications. Many countries have tax treaties - check if yours does. Consider registering for an EIN or equivalent business number.",
+      "Always get agreements in writing. A simple contract protects both parties. Include cancellation policies, revision limits, and dispute resolution methods."
+    ],
+    "pricing": [
+      "For hourly rates, research your market on platforms like Glassdoor, Upwork, and Toptal. Junior developers typically charge $25-50/hr, mid-level $50-100/hr, and senior $100-200+/hr depending on specialization.",
+      "Consider value-based pricing for projects where you can clearly demonstrate ROI. If your work will generate $100,000 for the client, charging $10,000-20,000 is reasonable.",
+      "Don't forget to account for non-billable hours (admin, marketing, learning). Most freelancers should add 25-40% to their base rate to cover these costs and maintain profitability."
+    ],
+    "startup": [
+      "Start by validating your idea with a Minimum Viable Product (MVP). Focus on solving one core problem extremely well before expanding. Use tools like Landing Page tests and customer interviews.",
+      "For early-stage funding, consider bootstrapping, friends & family, angel investors, or platforms like Y Combinator and Techstars. Prepare a clear pitch deck with problem, solution, market size, and traction.",
+      "Build in public! Share your journey on Twitter/X, LinkedIn, and indie hacker communities. This builds trust, attracts early users, and can lead to valuable connections and feedback."
+    ],
+    "career": [
+      "Build a strong portfolio showcasing 3-5 best projects. Include case studies with problem statements, your approach, technologies used, and measurable outcomes.",
+      "Networking is crucial. Attend meetups, contribute to open source, and engage on developer communities. Many job opportunities come through referrals rather than job boards.",
+      "Keep learning continuously. Dedicate 20% of your time to learning new skills. Follow industry leaders, take courses on platforms like Udemy, Coursera, and Frontend Masters."
+    ],
+    "general": [
+      "I'm GigZora's AI Assistant! I can help with legal advice for freelancers, pricing strategies, startup guidance, and career tips. Try asking about any of these topics!",
+      "Need help getting started? Try asking me about: 'How should I price my services?', 'What legal protections do I need?', or 'How do I start a freelance business?'",
+      "Remember, I provide general guidance based on common freelancing best practices. For specific legal or financial advice, always consult with qualified professionals."
+    ]
+  },
+  "greetings": [
+    "Hey there! 👋 I'm your GigZora AI Assistant. I can help with pricing advice, legal tips, startup guidance, and career strategies. What would you like to know?",
+    "Welcome to GigZora Assistant! 🚀 Ask me anything about freelancing, pricing, legal matters, or starting your own business."
+  ]
+}
