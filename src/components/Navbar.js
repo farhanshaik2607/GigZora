@@ -2,27 +2,44 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useTheme } from './ThemeProvider';
 import { useAuth } from './AuthProvider';
 
 export default function Navbar() {
   const { theme, toggleTheme } = useTheme();
-  const { user, logout } = useAuth();
+  const { user, loading: authLoading, logout } = useAuth();
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const profileRef = useRef(null);
+
+  // Close profile dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (profileRef.current && !profileRef.current.contains(event.target)) {
+        setProfileOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const isActive = (path) => pathname === path;
 
   const navLinks = user
     ? [
         { href: '/dashboard', label: 'Dashboard' },
+        { href: '/gig-match', label: 'Gig Match' },
         { href: '/leads', label: 'Leads Scraper' },
+        { href: '/chat', label: 'AI Chat' },
       ]
     : [
         { href: '/login', label: 'Log In' },
         { href: '/signup', label: 'Sign Up', isButton: true },
       ];
+
+  const isAuthPage = pathname === '/login' || pathname === '/signup';
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-surface-950 border-b border-surface-200/80 dark:border-surface-800/80">
@@ -35,57 +52,112 @@ export default function Navbar() {
               <span className="text-2xl font-extrabold text-primary-600 tracking-tight">GigZora.</span>
             </Link>
             
-            {/* Desktop Search Bar (Marketplace style) */}
-            <div className="hidden md:flex flex-1 max-w-md relative">
-              <input 
-                type="text" 
-                placeholder="Find services, jobs, or freelancers..." 
-                className="w-full px-4 py-2 pl-4 pr-10 rounded-md bg-surface-50 dark:bg-surface-900 border border-surface-300 dark:border-surface-700 text-sm focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500"
-              />
-              <button className="absolute right-0 top-0 h-full px-3 text-white bg-primary-600 rounded-r-md hover:bg-primary-700 flex items-center justify-center">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </button>
-            </div>
+            {/* Desktop Search Bar (Marketplace style) - hidden on auth pages */}
+            {!isAuthPage && (
+              <div className="hidden md:flex flex-1 max-w-md relative">
+                <input 
+                  type="text" 
+                  placeholder="Find services, jobs, or freelancers..." 
+                  className="w-full px-4 py-2 pl-4 pr-10 rounded-md bg-surface-50 dark:bg-surface-900 border border-surface-300 dark:border-surface-700 text-sm focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500"
+                />
+                <button className="absolute right-0 top-0 h-full px-3 text-white bg-primary-600 rounded-r-md hover:bg-primary-700 flex items-center justify-center">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-4">
-            <Link href="/" className="text-sm font-medium text-surface-600 dark:text-surface-300 hover:text-primary-600 dark:hover:text-primary-400">
-              Explore
-            </Link>
-            <Link href="/" className="text-sm font-medium text-surface-600 dark:text-surface-300 hover:text-primary-600 dark:hover:text-primary-400">
-              Find Freelancers
-            </Link>
+            {!isAuthPage && (
+              <>
+                <Link href="/explore" className="text-sm font-medium text-surface-600 dark:text-surface-300 hover:text-primary-600 dark:hover:text-primary-400">
+                  Explore
+                </Link>
+                <Link href="/freelancers" className="text-sm font-medium text-surface-600 dark:text-surface-300 hover:text-primary-600 dark:hover:text-primary-400">
+                  Find Freelancers
+                </Link>
 
-            <div className="w-px h-6 bg-surface-200 dark:bg-surface-700 mx-2" />
+                <div className="w-px h-6 bg-surface-200 dark:bg-surface-700 mx-2" />
+              </>
+            )}
 
-            {navLinks.map(link => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={
-                  link.isButton
-                    ? 'btn-primary py-1.5 px-4 text-sm'
-                    : `text-sm font-medium transition-colors ${
-                        isActive(link.href)
-                          ? 'text-primary-600 dark:text-primary-400 font-semibold'
-                          : 'text-surface-600 dark:text-surface-300 hover:text-primary-600 dark:hover:text-primary-400'
-                      }`
-                }
-              >
-                {link.label}
-              </Link>
-            ))}
+            {/* Show nothing or a small skeleton while auth is loading to prevent flashing */}
+            {authLoading ? (
+              <div className="flex items-center gap-4">
+                <div className="w-16 h-8 bg-surface-100 dark:bg-surface-800 rounded animate-pulse" />
+                <div className="w-20 h-8 bg-surface-100 dark:bg-surface-800 rounded animate-pulse" />
+              </div>
+            ) : (
+              <>
+                {navLinks.map(link => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={
+                      link.isButton
+                        ? 'btn-primary py-1.5 px-4 text-sm'
+                        : `text-sm font-medium transition-colors ${
+                            isActive(link.href)
+                              ? 'text-primary-600 dark:text-primary-400 font-semibold'
+                              : 'text-surface-600 dark:text-surface-300 hover:text-primary-600 dark:hover:text-primary-400'
+                          }`
+                    }
+                  >
+                    {link.label}
+                  </Link>
+                ))}
 
-            {user && (
-              <button
-                onClick={logout}
-                className="text-sm font-medium text-surface-600 dark:text-surface-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
-              >
-                Log Out
-              </button>
+                {user && (
+                  <div className="relative ml-2" ref={profileRef}>
+                    <button
+                      onClick={() => setProfileOpen(!profileOpen)}
+                      className="flex items-center justify-center w-9 h-9 rounded-full bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-400 font-bold border-2 border-transparent hover:border-primary-200 transition-all focus:outline-none"
+                    >
+                      {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+                    </button>
+                    
+                    {profileOpen && (
+                      <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-surface-900 rounded-xl shadow-lg border border-surface-200 dark:border-surface-700 py-2 animate-fade-in origin-top-right">
+                        <div className="px-4 py-3 border-b border-surface-100 dark:border-surface-800 mb-1">
+                          <p className="text-sm font-semibold text-surface-900 dark:text-white truncate">
+                            {user.name || 'User'}
+                          </p>
+                          <p className="text-xs text-surface-500 truncate mt-0.5">
+                            {user.email || 'user@gigzora.com'}
+                          </p>
+                        </div>
+                        <Link
+                          href="/dashboard"
+                          onClick={() => setProfileOpen(false)}
+                          className="block px-4 py-2 text-sm text-surface-700 dark:text-surface-300 hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors"
+                        >
+                          Dashboard
+                        </Link>
+                        <Link
+                          href="/settings"
+                          onClick={() => setProfileOpen(false)}
+                          className="block px-4 py-2 text-sm text-surface-700 dark:text-surface-300 hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors"
+                        >
+                          Settings
+                        </Link>
+                        <div className="border-t border-surface-100 dark:border-surface-800 my-1" />
+                        <button
+                          onClick={() => {
+                            logout();
+                            setProfileOpen(false);
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors"
+                        >
+                          Log Out
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </>
             )}
 
             {/* Theme Toggle */}
@@ -137,14 +209,16 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Categories Bar (Marketplace style) */}
-        <div className="hidden md:flex items-center gap-6 pb-3 overflow-x-auto scrollbar-hide">
-          {['Graphics & Design', 'Programming & Tech', 'Digital Marketing', 'Video & Animation', 'Writing & Translation', 'Music & Audio', 'Business', 'Data'].map((cat) => (
-            <span key={cat} className="text-sm font-medium text-surface-500 hover:text-primary-600 cursor-pointer whitespace-nowrap transition-colors">
-              {cat}
-            </span>
-          ))}
-        </div>
+        {/* Categories Bar (Marketplace style) - hidden on auth pages */}
+        {!isAuthPage && (
+          <div className="hidden md:flex items-center gap-6 pb-3 overflow-x-auto scrollbar-hide">
+            {require('@/data/categories.json').map((cat) => (
+              <Link key={cat.id} href={`/explore?category=${cat.id}`} className="text-sm font-medium text-surface-500 hover:text-primary-600 cursor-pointer whitespace-nowrap transition-colors">
+                {cat.name}
+              </Link>
+            ))}
+          </div>
+        )}
 
         {/* Mobile Menu */}
         {mobileOpen && (
@@ -155,28 +229,45 @@ export default function Navbar() {
                 placeholder="Find services..." 
                 className="w-full px-4 py-2 rounded-md bg-surface-50 dark:bg-surface-900 border border-surface-300 dark:border-surface-700 text-sm mb-2"
               />
-              {navLinks.map(link => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setMobileOpen(false)}
-                  className={`px-4 py-3 rounded-md text-sm font-medium transition-all ${
-                    link.isButton ? 'btn-primary text-center mb-2' : 
-                    isActive(link.href)
-                      ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400'
-                      : 'text-surface-600 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800'
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              ))}
-              {user && (
-                <button
-                  onClick={() => { logout(); setMobileOpen(false); }}
-                  className="px-4 py-3 rounded-md text-sm font-medium text-left text-surface-600 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800 transition-all"
-                >
-                  Log Out
-                </button>
+              {/* Mobile links wait for auth */}
+              {authLoading ? (
+                <div className="py-2 text-center text-sm text-surface-500">Loading...</div>
+              ) : (
+                <>
+                  {navLinks.map(link => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      onClick={() => setMobileOpen(false)}
+                      className={`px-4 py-3 rounded-md text-sm font-medium transition-all ${
+                        link.isButton ? 'btn-primary text-center mb-2' : 
+                        isActive(link.href)
+                          ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400'
+                          : 'text-surface-600 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800'
+                      }`}
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
+                  {user && (
+                    <div className="mt-4 pt-4 border-t border-surface-200 dark:border-surface-800">
+                      <div className="px-4 mb-3">
+                        <p className="text-sm font-semibold text-surface-900 dark:text-white truncate">
+                          {user.name || 'User'}
+                        </p>
+                        <p className="text-xs text-surface-500 truncate">
+                          {user.email || 'user@gigzora.com'}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => { logout(); setMobileOpen(false); }}
+                        className="w-full px-4 py-3 rounded-md text-sm font-medium text-left text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10 transition-all"
+                      >
+                        Log Out
+                      </button>
+                    </div>
+                  )}
+                </>
               )}
             </div>
           </div>

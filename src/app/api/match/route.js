@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import jobs from '@/data/jobs.json';
-import { calculateMatch, getImprovementSuggestions } from '@/lib/matching';
+import { matchJob, matchAllJobs } from '@/lib/matcher';
 
 export async function POST(request) {
   try {
@@ -12,30 +12,26 @@ export async function POST(request) {
 
     if (jobId) {
       // Match for a specific job
-      const job = jobs.find(j => j.id === parseInt(jobId));
+      const job = jobs.find(j => String(j.id) === String(jobId));
       if (!job) {
         return NextResponse.json({ error: 'Job not found' }, { status: 404 });
       }
 
-      const matchScore = calculateMatch(userProfile, job);
-      const suggestions = matchScore < 70 ? getImprovementSuggestions(userProfile, job) : null;
+      const { score, missingSkills, suggestions } = matchJob(userProfile, job);
 
       return NextResponse.json({
-        job: { ...job, matchScore },
-        suggestions,
+        job: { ...job, matchScore: score },
+        missingSkills,
+        suggestions: score < 70 ? suggestions : [],
       });
     }
 
     // Match all jobs
-    const matchedJobs = jobs
-      .map(job => ({
-        ...job,
-        matchScore: calculateMatch(userProfile, job),
-      }))
-      .sort((a, b) => b.matchScore - a.matchScore);
+    const matchedJobs = matchAllJobs(userProfile, jobs);
 
     return NextResponse.json({ jobs: matchedJobs });
   } catch (error) {
+    console.error('[API /match] Error:', error);
     return NextResponse.json({ error: 'Failed to calculate matches' }, { status: 500 });
   }
 }

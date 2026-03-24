@@ -4,17 +4,27 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/components/AuthProvider';
+import { useToast } from '@/components/ToastProvider';
+import PageTransition from '@/components/PageTransition';
 
-const availableSkills = [
-  'React', 'Next.js', 'TypeScript', 'JavaScript', 'Python', 'Node.js', 'CSS', 'Tailwind CSS',
-  'AWS', 'Docker', 'GraphQL', 'MongoDB', 'PostgreSQL', 'Firebase', 'Figma', 'Vue.js',
-  'Angular', 'Solidity', 'Machine Learning', 'Express', 'Kubernetes', 'Redis',
-];
+import categoriesData from '@/data/categories.json';
+
+// Flatten all skills into a single unique array and sort alphabetically
+const availableSkills = Array.from(
+  new Set(
+    categoriesData.flatMap(cat => 
+      cat.subcategories.flatMap(sub => sub.skills)
+    )
+  )
+).sort();
 
 export default function SignupPage() {
   const router = useRouter();
   const { signup } = useAuth();
+  const toast = useToast();
   const [step, setStep] = useState(1);
+  const [skillSearch, setSkillSearch] = useState('');
+  
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -47,9 +57,12 @@ export default function SignupPage() {
     setLoading(true);
     try {
       await signup(formData);
+      toast.success('Account created! Welcome to GigZora 🎉');
       router.push('/dashboard');
     } catch (err) {
-      setError(err.message || 'Signup failed. Please try again.');
+      const msg = err.message || 'Signup failed. Please try again.';
+      setError(msg);
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
@@ -64,7 +77,12 @@ export default function SignupPage() {
     }));
   };
 
+  const filteredSkills = skillSearch.trim() === '' 
+    ? availableSkills 
+    : availableSkills.filter(s => s.toLowerCase().includes(skillSearch.toLowerCase()));
+
   return (
+    <PageTransition>
     <div className="min-h-screen flex items-center justify-center px-4 pt-20 pb-10 bg-surface-50 dark:bg-surface-950">
       <div className="relative marketplace-card bg-white border border-surface-200 dark:border-surface-800 p-8 md:p-10 w-full max-w-lg animate-scale-in">
         <div className="text-center mb-8">
@@ -126,8 +144,17 @@ export default function SignupPage() {
             <>
               <div>
                 <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">Select Your Skills</label>
-                <div className="flex flex-wrap gap-2 max-h-40 overflow-y-auto p-2 rounded-xl bg-surface-50 dark:bg-surface-800/50 scrollbar-hide">
-                  {availableSkills.map(skill => (
+                <input
+                  type="text"
+                  placeholder="Search over 150+ skills..."
+                  value={skillSearch}
+                  onChange={e => setSkillSearch(e.target.value)}
+                  className="input-field mb-2"
+                />
+                <div className="flex flex-wrap gap-2 max-h-40 overflow-y-auto p-2 rounded-xl bg-surface-50 dark:bg-surface-800/50 scrollbar-hide border border-surface-200 dark:border-surface-700">
+                  {filteredSkills.length === 0 ? (
+                    <p className="text-xs text-surface-500 w-full text-center py-2">No skills found.</p>
+                  ) : filteredSkills.map(skill => (
                     <button
                       key={skill}
                       type="button"
@@ -143,7 +170,7 @@ export default function SignupPage() {
                   ))}
                 </div>
                 {formData.skills.length > 0 && (
-                  <p className="text-xs text-primary-500 mt-1.5">{formData.skills.length} skills selected</p>
+                  <p className="text-xs text-primary-600 dark:text-primary-400 mt-1.5 font-medium">{formData.skills.length} skills selected</p>
                 )}
               </div>
 
@@ -225,5 +252,6 @@ export default function SignupPage() {
         </div>
       </div>
     </div>
+    </PageTransition>
   );
 }

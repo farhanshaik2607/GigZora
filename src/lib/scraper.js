@@ -1,7 +1,7 @@
 /**
- * Gigzintel Lead Scraper
+ * GigZora Lead Scraper
  * Multi-source lead scraping engine using axios + cheerio.
- * Sources: google_maps, yelp, jooble, adzuna
+ * Sources: google_maps, google_places, yelp, jooble, adzuna
  */
 
 const axios = require('axios');
@@ -70,6 +70,85 @@ function normalizeLead(raw, source) {
     source: source,
     scrapedAt: new Date().toISOString(),
   };
+}
+
+// ─── Deep scrape: visit a URL to extract emails, phones, and links ───────────
+async function deepScrapeContact(url) {
+  if (!url || !url.startsWith('http')) return {};
+  // Skip non-business URLs
+  if (url.includes('google.com') || url.includes('yelp.com') || url.includes('facebook.com')) return {};
+  
+  try {
+    const { data } = await axios.get(url, {
+      headers: { 'User-Agent': getRandomUA() },
+      timeout: 8000,
+      maxRedirects: 3,
+    });
+
+    const $ = cheerio.load(data);
+    const pageText = $('body').text() || '';
+    const pageHtml = data || '';
+
+    // Extract emails from page text and mailto links
+    const emails = new Set(extractEmails(pageText));
+    $('a[href^="mailto:"]').each((_, el) => {
+      const href = $(el).attr('href') || '';
+      const email = href.replace('mailto:', '').split('?')[0].trim();
+      if (email && email.includes('@')) emails.add(email);
+    });
+
+    // Extract phone numbers from page text and tel links
+    const phones = new Set(extractPhones(pageText));
+    $('a[href^="tel:"]').each((_, el) => {
+      const href = $(el).attr('href') || '';
+      const phone = href.replace('tel:', '').trim();
+      if (phone) phones.add(phone);
+    });
+
+    // Extract website URL from common patterns
+    let website = url;
+    const canonical = $('link[rel="canonical"]').attr('href');
+    if (canonical && canonical.startsWith('http')) website = canonical;
+
+    // Extract social links
+    const socials = [];
+    $('a[href*="linkedin.com"], a[href*="twitter.com"], a[href*="instagram.com"], a[href*="facebook.com"]').each((_, el) => {
+      const href = $(el).attr('href');
+      if (href) socials.push(href);
+    });
+
+    return {
+      emails: [...emails].filter(e => !e.includes('example') && !e.includes('test')),
+      phones: [...phones],
+      website,
+      socials: [...new Set(socials)].slice(0, 3),
+    };
+  } catch {
+    return {};
+  }
+}
+
+// ─── Enrich leads with deep-scraped contact data ─────────────────────────────
+async function enrichLeads(leads) {
+  const enriched = [];
+  for (const lead of leads) {
+    // Only deep scrape if we're missing email or if we have a website
+    if ((!lead.email || !lead.phone) && lead.website) {
+      await delay(500); // Rate limit
+      const contact = await deepScrapeContact(lead.website);
+      if (contact.emails && contact.emails.length > 0 && !lead.email) {
+        lead.email = contact.emails[0];
+      }
+      if (contact.phones && contact.phones.length > 0 && !lead.phone) {
+        lead.phone = contact.phones[0];
+      }
+      if (contact.website) {
+        lead.website = contact.website;
+      }
+    }
+    enriched.push(lead);
+  }
+  return enriched;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -375,6 +454,59 @@ async function scrapeAdzuna(query) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
+// SOURCE 5: Google Places API (Text Search)
+// ═══════════════════════════════════════════════════════════════════════════════
+async function scrapeGooglePlaces(query) {
+  const leads = [];
+  const API_KEY = process.env.GOOGLE_PLACES_API_KEY;
+
+  if (!API_KEY || API_KEY === 'your-google-places-key') {
+    console.warn('[GooglePlaces] No API key configured. Skipping.');
+    return [];
+  }
+
+  try {
+    const url = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(query)}&key=${API_KEY}`;
+    const { data } = await axios.get(url, { timeout: 10000 });
+
+    if (data.status === 'OK' && data.results) {
+      for (const place of data.results.slice(0, 20)) {
+        // Optionally fetch details for phone/website
+        let phone = '';
+        let website = '';
+        
+        if (place.place_id) {
+          try {
+            const detailUrl = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${place.place_id}&fields=formatted_phone_number,website&key=${API_KEY}`;
+            const { data: detail } = await axios.get(detailUrl, { timeout: 5000 });
+            phone = detail.result?.formatted_phone_number || '';
+            website = detail.result?.website || '';
+          } catch {
+            // skip detail fetch
+          }
+          await delay(200); // Respect rate limits
+        }
+
+        leads.push(
+          normalizeLead({
+            name: place.name || 'N/A',
+            company: place.name || 'N/A',
+            email: '',
+            phone,
+            location: place.formatted_address || '',
+            website,
+          }, 'google_places')
+        );
+      }
+    }
+  } catch (error) {
+    console.error('[GooglePlaces] API error:', error.message);
+  }
+
+  return leads;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
 // Main export: scrapeLeads(query, source)
 // ═══════════════════════════════════════════════════════════════════════════════
 async function scrapeLeads(query, source) {
@@ -382,6 +514,7 @@ async function scrapeLeads(query, source) {
 
   const scrapers = {
     google_maps: scrapeGoogleMaps,
+    google_places: scrapeGooglePlaces,
     yelp: scrapeYelp,
     jooble: scrapeJooble,
     adzuna: scrapeAdzuna,
@@ -395,8 +528,16 @@ async function scrapeLeads(query, source) {
 
   try {
     console.log(`[Scraper] Starting ${source} scrape for: "${query}"`);
-    const leads = await scraperFn(query);
+    let leads = await scraperFn(query);
     console.log(`[Scraper] Found ${leads.length} leads from ${source}`);
+    
+    // Deep scrape to enrich leads with emails and websites
+    if (leads.length > 0) {
+      console.log(`[Scraper] Enriching ${leads.length} leads with contact data...`);
+      leads = await enrichLeads(leads);
+      console.log(`[Scraper] Enrichment complete.`);
+    }
+    
     return leads;
   } catch (error) {
     console.error(`[Scraper] Fatal error for ${source}:`, error.message);

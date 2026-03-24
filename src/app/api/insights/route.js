@@ -1,19 +1,31 @@
 import { NextResponse } from 'next/server';
 import jobs from '@/data/jobs.json';
-import { getHighDemandSkills, getUnderservedOpportunities } from '@/lib/matching';
+import { highDemandSkills, underservedOpportunities, skillGapAnalysis, marketSummary } from '@/lib/insights';
 
-export async function GET() {
+export async function GET(request) {
   try {
-    const highDemandSkills = getHighDemandSkills(jobs);
-    const underservedOpportunities = getUnderservedOpportunities(jobs);
+    const { searchParams } = new URL(request.url);
+    const userSkillsParam  = searchParams.get('skills'); // comma-separated
 
-    return NextResponse.json({
-      highDemandSkills,
-      underservedOpportunities,
-      totalJobs: jobs.length,
-      avgApplicants: Math.round(jobs.reduce((sum, j) => sum + j.applicants, 0) / jobs.length),
-    });
+    const demanded     = highDemandSkills(jobs);
+    const opportunities = underservedOpportunities(jobs);
+    const summary      = marketSummary(jobs);
+
+    const result = {
+      highDemandSkills: demanded,
+      underservedOpportunities: opportunities,
+      ...summary,
+    };
+
+    // If user skills are provided, include gap analysis
+    if (userSkillsParam) {
+      const userSkills = userSkillsParam.split(',').map(s => s.trim()).filter(Boolean);
+      result.skillGap  = skillGapAnalysis(userSkills, jobs);
+    }
+
+    return NextResponse.json(result);
   } catch (error) {
+    console.error('[API /insights] Error:', error);
     return NextResponse.json({ error: 'Failed to fetch insights' }, { status: 500 });
   }
 }

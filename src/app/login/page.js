@@ -4,10 +4,13 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/components/AuthProvider';
+import { useToast } from '@/components/ToastProvider';
+import PageTransition from '@/components/PageTransition';
 
 export default function LoginPage() {
   const router = useRouter();
   const { login } = useAuth();
+  const toast = useToast();
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -22,15 +25,19 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await login(formData.email, formData.password);
+      toast.success('Welcome back! Redirecting...');
       router.push('/dashboard');
     } catch (err) {
-      setError(err.message || 'Login failed. Please try again.');
+      const msg = err.message || 'Login failed. Please try again.';
+      setError(msg);
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
   };
 
   return (
+    <PageTransition>
     <div className="min-h-screen flex items-center justify-center px-4 pt-20 pb-10 bg-surface-50 dark:bg-surface-950">
       <div className="relative marketplace-card bg-white border border-surface-200 dark:border-surface-800 p-8 md:p-10 w-full max-w-md animate-scale-in">
         <div className="text-center mb-8">
@@ -91,7 +98,7 @@ export default function LoginPage() {
 
         <div className="mt-6 text-center">
           <p className="text-sm text-surface-500 dark:text-surface-400">
-            Don't have an account?{' '}
+            Don&apos;t have an account?{' '}
             <Link href="/signup" className="text-primary-600 dark:text-primary-400 font-semibold hover:underline">
               Create one
             </Link>
@@ -105,5 +112,6 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+    </PageTransition>
   );
 }

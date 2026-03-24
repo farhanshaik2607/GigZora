@@ -680,5 +680,27 @@
     "website": "",
     "source": "google_maps",
     "scrapedAt": "2026-03-24T14:28:33.669Z"
+  },
+  {
+    "id": "7e4fc9a17a582c80",
+    "name": "Cruise Drive-in",
+    "company": "Cruise Drive-in",
+    "email": "",
+    "phone": "",
+    "location": "",
+    "website": "",
+    "source": "google_maps",
+    "scrapedAt": "2026-03-24T20:08:37.588Z"
+  },
+  {
+    "id": "c099ea13ec947d9b",
+    "name": "Chai Bunk Kompally",
+    "company": "Chai Bunk Kompally",
+    "email": "",
+    "phone": "",
+    "location": "",
+    "website": "",
+    "source": "google_maps",
+    "scrapedAt": "2026-03-24T20:08:37.593Z"
   }
 ]

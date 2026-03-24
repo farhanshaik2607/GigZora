@@ -13,7 +13,7 @@ export async function POST(request) {
       );
     }
 
-    const validSources = ['google_maps', 'yelp', 'jooble', 'adzuna'];
+    const validSources = ['google_maps', 'google_places', 'yelp', 'jooble', 'adzuna'];
     if (!source || !validSources.includes(source)) {
       return NextResponse.json(
         { error: `Invalid source. Must be one of: ${validSources.join(', ')}` },

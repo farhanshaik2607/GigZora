@@ -31,7 +31,7 @@ export default function LandingPage() {
                 <span className="text-primary-600">should work</span> 
               </h1>
               <p className="text-lg text-surface-600 dark:text-surface-400 mb-8 max-w-lg">
-                Forget the old rules. You can have the best people. Right now. Right here. Welcome to GigZora, the world's work marketplace designed for you.
+                Forget the old rules. You can have the best people. Right now. Right here. Welcome to GigZora, the world&apos;s work marketplace designed for you.
               </p>
               
               {/* Search Box */}
@@ -130,7 +130,7 @@ export default function LandingPage() {
                  <div className="flex-shrink-0 mt-1"><svg className="w-6 h-6 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7"/></svg></div>
                  <div>
                    <h4 className="text-xl font-semibold text-surface-900">Protected payments, every time</h4>
-                   <p className="text-surface-600 mt-1">Always know what you'll pay upfront. Your payment isn't released until you approve the work.</p>
+                   <p className="text-surface-600 mt-1">Always know what you&apos;ll pay upfront. Your payment isn&apos;t released until you approve the work.</p>
                  </div>
                </li>
              </ul>

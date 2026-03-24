@@ -20,7 +20,9 @@ export default function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // On mount, check localStorage first (instant), then optionally verify with server
   useEffect(() => {
+    // Immediately check localStorage
     const stored = localStorage.getItem('gigzora-user');
     if (stored) {
       try {
@@ -29,6 +31,7 @@ export default function AuthProvider({ children }) {
         localStorage.removeItem('gigzora-user');
       }
     }
+    // Done loading — user state is now set from localStorage
     setLoading(false);
   }, []);
 
@@ -76,9 +79,14 @@ export default function AuthProvider({ children }) {
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
     setUser(null);
     localStorage.removeItem('gigzora-user');
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } catch {
+      // ignore
+    }
   };
 
   return (

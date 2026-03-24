@@ -5,7 +5,7 @@ import { useState, useRef, useEffect } from 'react';
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
-    { role: 'assistant', content: "Hey there! 👋 I'm your GigZora AI Assistant. I can help with pricing advice, legal tips, startup guidance, and career strategies. What would you like to know?" }
+    { role: 'assistant', content: "Hey there! 👋 I'm your GigZora AI Assistant. I can help with:\n\n• 💰 Pricing strategies\n• 📜 Legal & contracts\n• 🧾 Invoicing tips\n• 🚀 Startup guidance\n• 🤝 Client acquisition\n• 📧 Cold email templates\n• 🧮 Tax advice\n• 📣 Marketing & branding\n\nWhat would you like to know?" }
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -32,6 +32,7 @@ export default function ChatWidget() {
       setMessages(prev => [...prev, {
         role: 'assistant',
         content: data.response || "I'm not sure how to help with that. Try asking about pricing, legal advice, or startup tips!",
+        intent: data.intent,
       }]);
     } catch {
       setMessages(prev => [...prev, {
@@ -43,12 +44,39 @@ export default function ChatWidget() {
     }
   };
 
+  // Simple markdown-ish renderer for bold and bullet points
+  function renderContent(text) {
+    if (!text) return null;
+    return text.split('\n').map((line, i) => {
+      // Bold: **text**
+      const parts = line.split(/(\*\*[^*]+\*\*)/g).map((part, j) => {
+        if (part.startsWith('**') && part.endsWith('**')) {
+          return <strong key={j} className="font-semibold">{part.slice(2, -2)}</strong>;
+        }
+        return part;
+      });
+
+      if (line.trim() === '') return <br key={i} />;
+      if (line.trim().startsWith('•') || line.trim().startsWith('-')) {
+        return <div key={i} className="flex gap-2 ml-1"><span className="shrink-0">{line.match(/^[\s]*(•|-)/)[0].trim()}</span><span>{parts.slice(1)}</span></div>;
+      }
+      return <div key={i}>{parts}</div>;
+    });
+  }
+
+  const quickActions = [
+    { label: '💰 Pricing', msg: 'How should I price my freelance services?' },
+    { label: '📜 Contracts', msg: 'What should I include in a freelance contract?' },
+    { label: '📧 Cold Email', msg: 'Help me write a cold email for outreach' },
+    { label: '🧮 Taxes', msg: 'Tax tips for freelancers' },
+  ];
+
   return (
     <>
       {/* Floating Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full gradient-bg shadow-glow-lg hover:shadow-glow flex items-center justify-center text-white transition-all duration-300 hover:scale-110 active:scale-95"
+        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-primary-600 shadow-lg hover:bg-primary-700 hover:shadow-xl flex items-center justify-center text-white transition-all duration-300 hover:scale-110 active:scale-95"
         aria-label="Toggle chat"
       >
         {isOpen ? (
@@ -64,9 +92,9 @@ export default function ChatWidget() {
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-24 right-6 z-50 w-[380px] max-w-[calc(100vw-3rem)] h-[500px] max-h-[calc(100vh-8rem)] glass-card flex flex-col overflow-hidden animate-scale-in shadow-2xl">
+        <div className="fixed bottom-24 right-6 z-50 w-[400px] max-w-[calc(100vw-3rem)] h-[560px] max-h-[calc(100vh-8rem)] bg-white dark:bg-surface-900 rounded-2xl border border-surface-200 dark:border-surface-800 flex flex-col overflow-hidden shadow-2xl animate-scale-in">
           {/* Header */}
-          <div className="gradient-bg px-5 py-4 flex items-center gap-3 flex-shrink-0">
+          <div className="bg-primary-600 px-5 py-4 flex items-center gap-3 flex-shrink-0">
             <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center">
               <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -74,7 +102,7 @@ export default function ChatWidget() {
             </div>
             <div>
               <h3 className="font-semibold text-white text-sm">GigZora AI Assistant</h3>
-              <p className="text-xs text-white/70">Online • Ready to help</p>
+              <p className="text-xs text-white/70">Online • 10 topics available</p>
             </div>
           </div>
 
@@ -84,10 +112,10 @@ export default function ChatWidget() {
               <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div className={`max-w-[85%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${
                   msg.role === 'user'
-                    ? 'gradient-bg text-white rounded-br-md'
+                    ? 'bg-primary-600 text-white rounded-br-md'
                     : 'bg-surface-100 dark:bg-surface-800 text-surface-800 dark:text-surface-200 rounded-bl-md'
                 }`}>
-                  {msg.content}
+                  {msg.role === 'assistant' ? renderContent(msg.content) : msg.content}
                 </div>
               </div>
             ))}
@@ -105,6 +133,21 @@ export default function ChatWidget() {
             <div ref={messagesEnd} />
           </div>
 
+          {/* Quick Actions (show only at start) */}
+          {messages.length <= 1 && (
+            <div className="px-4 pb-2 flex flex-wrap gap-2">
+              {quickActions.map((qa, i) => (
+                <button
+                  key={i}
+                  onClick={() => { setInput(qa.msg); }}
+                  className="text-xs px-3 py-1.5 rounded-full bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 hover:bg-primary-100 dark:hover:bg-primary-900/50 transition-colors"
+                >
+                  {qa.label}
+                </button>
+              ))}
+            </div>
+          )}
+
           {/* Input */}
           <div className="p-3 border-t border-surface-200 dark:border-surface-700 flex-shrink-0">
             <div className="flex gap-2">
@@ -119,7 +162,7 @@ export default function ChatWidget() {
               <button
                 onClick={sendMessage}
                 disabled={loading || !input.trim()}
-                className="p-2.5 rounded-xl gradient-bg text-white disabled:opacity-50 hover:opacity-90 transition-all"
+                className="p-2.5 rounded-xl bg-primary-600 text-white disabled:opacity-50 hover:bg-primary-700 transition-all"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />

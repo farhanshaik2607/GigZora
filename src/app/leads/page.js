@@ -1,9 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/components/AuthProvider';
+import { useToast } from '@/components/ToastProvider';
+import PageTransition from '@/components/PageTransition';
 
 const SOURCES = [
   { id: 'google_maps', label: 'Google Maps (Businesses)' },
+  { id: 'google_places', label: 'Google Places (API)' },
   { id: 'yelp', label: 'Yelp (Local Services)' },
   { id: 'jooble', label: 'Jooble (Job Listings)' },
   { id: 'adzuna', label: 'Adzuna (Job Postings)' },
@@ -16,6 +21,17 @@ export default function LeadsDashboard() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [initialLoading, setInitialLoading] = useState(true);
+  
+  const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
+  const toast = useToast();
+
+  // Protect route
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push('/login');
+    }
+  }, [user, authLoading, router]);
 
   // Fetch all leads on mount
   useEffect(() => {
@@ -65,12 +81,15 @@ export default function LeadsDashboard() {
       // Clear query if successful
       if (data.count > 0) {
           setQuery('');
+          toast.success(`Found ${data.count} new leads!`);
       } else {
           setError(`No leads found for "${query}" on ${source}.`);
+          toast.info('No leads found. Try a different query.');
       }
 
     } catch (err) {
       setError(err.message);
+      toast.error(err.message || 'Scraping failed');
     } finally {
       setLoading(false);
     }
@@ -100,13 +119,22 @@ export default function LeadsDashboard() {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `gigzintel_leads_${new Date().toISOString().split('T')[0]}.csv`);
+    link.setAttribute("download", `gigzora_leads_${new Date().toISOString().split('T')[0]}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
 
+  if (authLoading || !user) {
+    return (
+      <div className="min-h-screen pt-24 pb-12 bg-surface-50 dark:bg-surface-950 flex justify-center items-center">
+        <div className="w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
   return (
+    <PageTransition>
     <div className="min-h-screen bg-surface-50 dark:bg-surface-950 pt-24 pb-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
@@ -114,7 +142,7 @@ export default function LeadsDashboard() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
           <div>
             <h1 className="text-3xl font-bold tracking-tight text-surface-900 dark:text-white mb-2">
-              Gigzintel Scraping Center
+              GigZora Scraping Center
             </h1>
             <p className="text-surface-600 dark:text-surface-400 max-w-2xl">
               Discover and extract high-value client leads across multiple platforms seamlessly.
@@ -300,5 +328,6 @@ export default function LeadsDashboard() {
 
       </div>
     </div>
+    </PageTransition>
   );
 }

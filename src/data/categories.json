@@ -1,0 +1,190 @@
+[
+  {
+    "id": "graphics-design",
+    "name": "Graphics & Design",
+    "icon": "🎨",
+    "subcategories": [
+      {
+        "name": "Logo & Brand Identity",
+        "skills": ["Logo Design", "Brand Style Guides", "Business Cards & Stationery", "Fonts & Typography"]
+      },
+      {
+        "name": "Web & App Design",
+        "skills": ["Website Design", "App Design", "UX Design", "Landing Page Design", "Icon Design"]
+      },
+      {
+        "name": "Art & Illustration",
+        "skills": ["Illustration", "AI Artists", "Children's Book Illustration", "Portraits & Caricatures", "Cartoons & Comics", "Pattern Design", "Tattoo Design", "Storyboards"]
+      },
+      {
+        "name": "Marketing Design",
+        "skills": ["Social Media Design", "Email Design", "Web Banners", "Signage Design", "Packaging & Label Design", "Book Design", "Podcast Cover Art"]
+      },
+      {
+        "name": "3D Design",
+        "skills": ["3D Modeling", "3D Rendering", "3D Character Design", "Architecture & Interior Design", "Landscape Design", "Building Information Modeling"]
+      }
+    ]
+  },
+  {
+    "id": "programming-tech",
+    "name": "Programming & Tech",
+    "icon": "💻",
+    "subcategories": [
+      {
+        "name": "Website Development",
+        "skills": ["WordPress", "Shopify", "React", "Next.js", "Vue.js", "Angular", "Webflow", "Wix", "Custom Website", "E-Commerce Development", "Landing Pages"]
+      },
+      {
+        "name": "Software Development",
+        "skills": ["Web Applications", "Desktop Applications", "APIs & Integrations", "Scripting & Automation", "Database Design", "QA & Review", "Python", "Java", "C++", "C#", "Node.js", "Go", "Rust"]
+      },
+      {
+        "name": "Mobile Apps",
+        "skills": ["iOS App Development", "Android App Development", "Cross-Platform Apps", "React Native", "Flutter", "Swift", "Kotlin", "Mobile App Maintenance"]
+      },
+      {
+        "name": "AI & Data",
+        "skills": ["Machine Learning", "Deep Learning", "Data Science", "Data Analytics", "Data Visualization", "Data Processing", "NLP", "Computer Vision", "Prompt Engineering", "AI Chatbot Development"]
+      },
+      {
+        "name": "Support & Cybersecurity",
+        "skills": ["Cybersecurity", "Penetration Testing", "DevOps", "Cloud Computing", "AWS", "Azure", "Google Cloud", "IT Support", "Network Administration", "Server Management"]
+      },
+      {
+        "name": "Blockchain & Web3",
+        "skills": ["Smart Contracts", "dApps", "NFT Development", "Tokenomics", "Solidity", "Web3.js", "Ethers.js"]
+      }
+    ]
+  },
+  {
+    "id": "digital-marketing",
+    "name": "Digital Marketing",
+    "icon": "📈",
+    "subcategories": [
+      {
+        "name": "Search Engine Optimization (SEO)",
+        "skills": ["Off-Page SEO", "On-Page SEO", "Technical SEO", "Keyword Research", "Competitor Analysis", "Local SEO", "Voice Search SEO"]
+      },
+      {
+        "name": "Social Media Marketing",
+        "skills": ["Social Media Management", "Organic Social Promotions", "Profile Setup & Integration", "Social Commerce", "Community Management"]
+      },
+      {
+        "name": "Paid Advertising",
+        "skills": ["Search Engine Marketing (SEM)", "Social Media Advertising", "Display Advertising", "Native Advertising", "Google Ads", "Facebook Ads", "TikTok Ads", "LinkedIn Ads", "Retargeting"]
+      },
+      {
+        "name": "Content & Email",
+        "skills": ["Content Marketing", "Content Strategy", "Email Marketing", "Email Campaigns", "Email Automations", "Newsletter Management", "Lead Generation"]
+      },
+      {
+        "name": "Growth Hacking",
+        "skills": ["Conversion Rate Optimization (CRO)", "A/B Testing", "Funnel Building", "Marketing Strategy", "Affiliate Marketing", "Influencer Marketing", "PR & Media Outreach"]
+      }
+    ]
+  },
+  {
+    "id": "video-animation",
+    "name": "Video & Animation",
+    "icon": "🎬",
+    "subcategories": [
+      {
+        "name": "Editing & Post-Production",
+        "skills": ["Video Editing", "Visual Effects", "Color Grading", "Subtitles & Captions", "Audio Editing for Video"]
+      },
+      {
+        "name": "Social & Short Form",
+        "skills": ["Short Video Ads", "TikTok Videos", "Instagram Reels", "YouTube Shorts", "Social Media Videos"]
+      },
+      {
+        "name": "Animation & 3D",
+        "skills": ["2D Animation", "3D Animation", "Character Animation", "Logo Animation", "Motion Graphics", "Whiteboard Animation", "Lottie & Web Animation"]
+      },
+      {
+        "name": "Corporate & Marketing",
+        "skills": ["Corporate Videos", "Explainer Videos", "Crowdfunding Videos", "E-Commerce Product Videos", "App & Website Previews", "Screencasting"]
+      }
+    ]
+  },
+  {
+    "id": "writing-translation",
+    "name": "Writing & Translation",
+    "icon": "✍️",
+    "subcategories": [
+      {
+        "name": "Copywriting",
+        "skills": ["Sales Copy", "Website Content", "Ad Copy", "Email Copy", "Product Descriptions", "Social Media Copy", "Slogans & Taglines"]
+      },
+      {
+        "name": "Content Writing",
+        "skills": ["Articles & Blog Posts", "SEO Writing", "Technical Writing", "White Papers", "E-Books", "Case Studies", "Press Releases", "Ghostwriting"]
+      },
+      {
+        "name": "Career & Professional",
+        "skills": ["Resumes", "Cover Letters", "LinkedIn Profiles", "Business Plans", "Grant Writing", "Job Descriptions"]
+      },
+      {
+        "name": "Editing & Translation",
+        "skills": ["Proofreading", "Editing", "Translation", "Localization", "Transcription", "Creative Writing", "Scriptwriting"]
+      }
+    ]
+  },
+  {
+    "id": "music-audio",
+    "name": "Music & Audio",
+    "icon": "🎵",
+    "subcategories": [
+      {
+        "name": "Audio Production",
+        "skills": ["Mixing & Mastering", "Audio Editing", "Vocal Tuning", "Podcast Editing", "Audiobook Production", "Sound Design"]
+      },
+      {
+        "name": "Voice & Talent",
+        "skills": ["Voice Over", "Singers & Vocalists", "Session Musicians", "Jingles & Intros", "Audio Ads"]
+      },
+      {
+        "name": "Composition",
+        "skills": ["Producers & Composers", "Beat Making", "Songwriting", "Meditation Music", "Background Music"]
+      }
+    ]
+  },
+  {
+    "id": "business",
+    "name": "Business",
+    "icon": "💼",
+    "subcategories": [
+      {
+        "name": "Business Operations",
+        "skills": ["Virtual Assistant", "Data Entry", "Project Management", "Supply Chain Management", "Customer Service", "HR Consulting", "E-Commerce Management"]
+      },
+      {
+        "name": "Sales & Finance",
+        "skills": ["Sales & Cold Calling", "B2B Lead Generation", "Cold Emailing", "Telemarketing", "Financial Consulting", "Accounting", "Bookkeeping", "Tax Consulting", "Business Plans"]
+      },
+      {
+        "name": "Legal & Strategy",
+        "skills": ["Legal Consulting", "Contract Drafting", "Market Research", "Business Consulting", "Presentations", "Business Registration"]
+      }
+    ]
+  },
+  {
+    "id": "data",
+    "name": "Data",
+    "icon": "📊",
+    "subcategories": [
+      {
+        "name": "Data Science",
+        "skills": ["Data Science", "Machine Learning", "Data Engineering", "Data Modeling", "AI Strategy"]
+      },
+      {
+        "name": "Data Analysis",
+        "skills": ["Data Analytics", "Data Visualization", "Dashboards", "Business Intelligence", "Excel", "SQL", "Tableau", "Power BI"]
+      },
+      {
+        "name": "Data Collection",
+        "skills": ["Data Scraping", "Data Mining", "Data Formatting", "Data Cleaning", "Web Research"]
+      }
+    ]
+  }
+]

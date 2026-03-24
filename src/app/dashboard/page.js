@@ -1,18 +1,20 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/components/AuthProvider';
 import { JobCard, SkeletonCard, SkeletonInsight, InsightCard, SuggestionCard, EmptyState } from '@/components/ui';
 import ChatWidget from '@/components/ChatWidget';
+import PageTransition from '@/components/PageTransition';
 
 export default function DashboardPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { user, loading: authLoading } = useAuth();
   const [jobs, setJobs] = useState([]);
   const [insights, setInsights] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState(searchParams.get('search') || '');
   const [locationFilter, setLocationFilter] = useState('');
   const [typeFilter, setTypeFilter] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(null);
@@ -73,7 +75,8 @@ export default function DashboardPage() {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen pt-20 pb-10 bg-surface-50 dark:bg-surface-950">
+    <PageTransition>
+    <div className="min-h-screen pt-32 pb-10 bg-surface-50 dark:bg-surface-950">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Welcome Header */}
         <div className="mb-8 animate-fade-in">
@@ -324,5 +327,6 @@ export default function DashboardPage() {
 
       <ChatWidget />
     </div>
+    </PageTransition>
   );
 }

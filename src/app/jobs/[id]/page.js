@@ -22,6 +22,7 @@ export default function JobDetailPage({ params }) {
     if (user && id) {
       fetchJobDetails();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, authLoading, id]);
 
   const fetchJobDetails = async () => {
